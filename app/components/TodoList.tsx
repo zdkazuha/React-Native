@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import { ToDo } from "../../models/ToDo";
-import TodoListItem from "./TodoListItem";
+import ToDoListItem from "./ToDoListItem";
+import ToDoForm from "./ToDoForm";
 
 const api = "https://dummyjson.com/todos";
 
-export default function TodoList() {
+export default function ToDoList() {
   const [toDos, setToDos] = useState<ToDo[]>([]);
 
   useEffect(() => {
@@ -22,16 +23,33 @@ export default function TodoList() {
     }
   };
 
+  const handleCreateToDo = (todo: ToDo) => {
+    let newId = toDos.length + 1
+    let newToDo = {
+      ...todo,
+      id: newId
+    }
+    setToDos((prevToDos) => [...prevToDos, newToDo])
+  }
+
+  const handleDeleteToDo = (id: number) => {
+    setToDos((prevToDos) => 
+      prevToDos.filter((toDo) => toDo.id !== id)
+  )}
+
   return (
     <View style={styles.container}>
-      <View style={styles.backgroundTop} />
-      <View style={styles.backgroundBottom} />
+
+      <ToDoForm OnCreate={handleCreateToDo}/>
+
+        <View style={styles.backgroundTop} />
+        <View style={styles.backgroundBottom} />
 
       <Text style={styles.title}>ToDo List</Text>
       <Text style={styles.title}>4th March 2026</Text>
       <FlatList
         data={toDos}
-        renderItem={({ item }) => <TodoListItem toDo={item} />}
+        renderItem={({ item }) => <ToDoListItem toDo={item} onDelete={handleDeleteToDo}  />}
         initialNumToRender={10}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={{ paddingBottom: 20 }}

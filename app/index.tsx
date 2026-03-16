@@ -1,6 +1,5 @@
 import React from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import TodoList from "./components/TodoList";
 
 // const App = () => {
 //   const [question, setQuestion] = React.useState(-1);
@@ -529,11 +528,13 @@ import TodoList from "./components/TodoList";
 
 // export default App;
 
+import ToDoList from "./components/ToDoList";
+
 const App = () => {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={{ flex: 1 }}>
-        <TodoList />
+        <ToDoList />
       </SafeAreaView>
     </SafeAreaProvider>
   );
