@@ -1,4 +1,4 @@
-import { ToDo } from "@/models/ToDo";
+import { ToDo } from "@/app/models/ToDo";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
 import React, { useState } from "react";
@@ -11,7 +11,7 @@ import {
   Switch,
   Text,
   TextInput,
-  View
+  View,
 } from "react-native";
 
 type Props = {

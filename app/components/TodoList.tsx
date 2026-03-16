@@ -1,44 +1,58 @@
 import { useEffect, useState } from "react";
-import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
-import { ToDo } from "../../models/ToDo";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import { ToDo } from "../models/ToDo";
+import { storage } from "../services/services";
 import ToDoListItem from "./ToDoListItem";
+import { useIsFocused } from '@react-navigation/native';
 
-const api = "https://dummyjson.com/todos";
-
-export default function ToDoList() {
+function ToDoList() {
   const [toDos, setToDos] = useState<ToDo[]>([]);
+  const isFocused = useIsFocused()
 
   useEffect(() => {
-    getToDo();
-  }, []);
+    if (isFocused) {
+      loadToDo();
+    }
+  }, [isFocused]);
 
-  const getToDo = async () => {
-    try {
-      const response = await fetch(api);
+  useEffect(() => {
+    if (toDos.length > 0) {
+      saveToDo();
+    }
+  }, [toDos]);
+
+  const loadToDo = async () => {
+    const storageToDo = await storage.load<ToDo[]>("ToDoList") || [];
+
+    if (storageToDo && storageToDo.length > 0) {
+      setToDos(storageToDo);
+    } else {
+      const response = await fetch("https://dummyjson.com/todos");
       const json = await response.json();
-      setToDos(json.todos);
-    } catch (err: any) {
-      Alert.alert("Error", err.message);
+      const mappedTodos = json.todos.map((item: ToDo) => ({
+        id: item.id,
+        title: "Resp API",
+        todo: item.todo,
+        completed: item.completed,
+        priority: "low",
+        date: new Date(),
+        userId: item.userId
+      }));
+      setToDos(mappedTodos);
+      console.log(toDos)
     }
   };
 
-  const handleCreateToDo = (todo: ToDo) => {
-    let newId = toDos.length + 1
-    let newToDo = {
-      ...todo,
-      id: newId
-    }
-    setToDos((prevToDos) => [...prevToDos, newToDo])
-  }
+  const saveToDo = async () => {
+    await storage.save("ToDoList", toDos);
+  };
 
-  const handleDeleteToDo = (id: number) => {
-    setToDos((prevToDos) => 
-      prevToDos.filter((toDo) => toDo.id !== id)
-  )}
+  const handleDeleteToDo = async (id: number) => {
+    setToDos((prevToDos) => prevToDos.filter((toDo) => toDo.id !== id));
+  };
 
   return (
     <View style={styles.container}>
-
       <View style={styles.backgroundTop} />
       <View style={styles.backgroundBottom} />
 
@@ -46,7 +60,9 @@ export default function ToDoList() {
       <Text style={styles.title}>4th March 2026</Text>
       <FlatList
         data={toDos}
-        renderItem={({ item }) => <ToDoListItem toDo={item} onDelete={handleDeleteToDo}  />}
+        renderItem={({ item }) => (
+          <ToDoListItem toDo={item} onDelete={handleDeleteToDo} />
+        )}
         initialNumToRender={10}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={{ paddingBottom: 20 }}
@@ -55,33 +71,35 @@ export default function ToDoList() {
   );
 }
 
+export default ToDoList;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
   backgroundTop: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
-    height: '50%',
-    backgroundColor: '#f8d56f', 
-    zIndex: -1, 
+    height: "50%",
+    backgroundColor: "#f8d56f",
+    zIndex: -1,
   },
   backgroundBottom: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
-    height: '50%',
-    backgroundColor: '#5b87de', 
+    height: "50%",
+    backgroundColor: "#5b87de",
     zIndex: -1,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginVertical: 10,
-    backgroundColor: 'transparent',
-  }
+    backgroundColor: "transparent",
+  },
 });

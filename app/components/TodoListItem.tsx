@@ -1,6 +1,6 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { ToDo, Priority } from "../../models/ToDo";
+import { Priority, ToDo } from "../models/ToDo";
 
 type ToDoItemProps = {
   toDo: ToDo;
@@ -11,21 +11,25 @@ export default function ToDoListItem({ toDo, onDelete }: ToDoItemProps) {
   const currentPriority = toDo?.priority || Priority.low;
   const displayTitle = toDo?.title || "No Title";
   const displayTodo = toDo?.todo || "No description provided";
-  
+
   const getSafeDate = () => {
     if (!toDo?.date) return new Date();
     const d = new Date(toDo.date);
     return isNaN(d.getTime()) ? new Date() : d;
   };
-  
+
   const displayDate = getSafeDate();
 
   const getPriorityColor = (priority: Priority) => {
     switch (priority) {
-      case Priority.high: return "#ff4d4d";
-      case Priority.medium: return "#ffa500";
-      case Priority.low: return "#4caf50";
-      default: return "#888";
+      case Priority.high:
+        return "#ff4d4d";
+      case Priority.medium:
+        return "#ffa500";
+      case Priority.low:
+        return "#4caf50";
+      default:
+        return "#888";
     }
   };
 
@@ -37,29 +41,45 @@ export default function ToDoListItem({ toDo, onDelete }: ToDoItemProps) {
       ]}
     >
       <View style={styles.header}>
-        <View style={[styles.priorityBadge, { backgroundColor: getPriorityColor(currentPriority) }]}>
-          <Text style={styles.priorityText}>{String(currentPriority).toUpperCase()}</Text>
+        <View
+          style={[
+            styles.priorityBadge,
+            { backgroundColor: getPriorityColor(currentPriority) },
+          ]}
+        >
+          <Text style={styles.priorityText}>
+            {String(currentPriority).toUpperCase()}
+          </Text>
         </View>
         <Text style={styles.idText}>#{toDo?.id || "0"}</Text>
       </View>
 
       <Text style={styles.titleText}>{displayTitle}</Text>
-      
+
       <Text style={[styles.todoText, toDo?.completed && styles.completedText]}>
         {displayTodo}
       </Text>
 
       <View style={styles.footer}>
         <View>
-          <Text style={styles.dateText}>📅 {displayDate.toLocaleDateString()}</Text>
-          <Text style={styles.userIdText}>User ID: {toDo?.userId || "N/A"}</Text>
+          <Text style={styles.dateText}>
+            📅 {displayDate.toLocaleDateString()}
+          </Text>
+          <Text style={styles.userIdText}>
+            User ID: {toDo?.userId || "N/A"}
+          </Text>
         </View>
-        
+
         <View style={styles.actions}>
-          <Text style={[styles.statusText, { color: toDo?.completed ? "#2e7d32" : "#696766" }]}>
+          <Text
+            style={[
+              styles.statusText,
+              { color: toDo?.completed ? "#2e7d32" : "#696766" },
+            ]}
+          >
             {toDo?.completed ? "✓ Done" : "To-Do"}
           </Text>
-          
+
           <Pressable
             style={styles.deleteButton}
             onPress={() => onDelete(toDo?.id)}
