@@ -12,7 +12,6 @@ export default function ToDoListItem({ toDo, onDelete }: ToDoItemProps) {
   const displayTitle = toDo?.title || "No Title";
   const displayTodo = toDo?.todo || "No description provided";
   
-  // Безпечна обробка дати
   const getSafeDate = () => {
     if (!toDo?.date) return new Date();
     const d = new Date(toDo.date);

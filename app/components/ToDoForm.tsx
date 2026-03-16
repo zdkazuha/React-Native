@@ -171,9 +171,9 @@ export default ToDoForm;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "gray",
+    backgroundColor: "#272222",
     minHeight: 500,
-    height: 2000,
+    height: 600,
     padding: 20,
   },
   heading: {

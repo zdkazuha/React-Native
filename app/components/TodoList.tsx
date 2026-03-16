@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import { ToDo } from "../../models/ToDo";
 import ToDoListItem from "./ToDoListItem";
-import ToDoForm from "./ToDoForm";
 
 const api = "https://dummyjson.com/todos";
 
@@ -40,10 +39,8 @@ export default function ToDoList() {
   return (
     <View style={styles.container}>
 
-      <ToDoForm OnCreate={handleCreateToDo}/>
-
-        <View style={styles.backgroundTop} />
-        <View style={styles.backgroundBottom} />
+      <View style={styles.backgroundTop} />
+      <View style={styles.backgroundBottom} />
 
       <Text style={styles.title}>ToDo List</Text>
       <Text style={styles.title}>4th March 2026</Text>

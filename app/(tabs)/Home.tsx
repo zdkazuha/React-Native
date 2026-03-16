@@ -1,17 +1,15 @@
 import React from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import ToDoList from "./components/ToDoList";
-import { Link } from "expo-router";
+import ToDoList from "../components/ToDoList";
 
-const App = () => {
+const Home = () => {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={{ flex: 1 }}>
         <ToDoList />
-        <Link href="./details" style={{marginTop: 20}}>Go to Details</Link>
       </SafeAreaView>
     </SafeAreaProvider>
   );
 };
 
-export default App;
+export default Home;
