@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Text } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { Priority, ToDo } from "../../models/ToDo";
+import { storage } from "../../services/services";
 import ToDoListItem from "../components/ToDoListItem";
-import { Priority, ToDo } from "../models/ToDo";
-import { storage } from "../services/services";
 
 const Details = () => {
   const [toDo, setToDo] = useState<ToDo>();
@@ -23,12 +23,13 @@ const Details = () => {
   }, []);
 
   const handleDeleteToDo = async (id: number) => {
-    const storageToDo = await storage.load<ToDo[]>("ToDoList") || []
+    const storageToDo = (await storage.load<ToDo[]>("ToDoList")) || [];
 
     let newToDoList = storageToDo.filter((toDo) => toDo.id !== id);
 
-    await storage.save("ToDoList", newToDoList)
-    setToDo(undefined)
+    await storage.save("ToDoList", newToDoList);
+
+    setToDo(undefined);
   };
 
   return (

@@ -1,4 +1,4 @@
-import { ToDo } from "@/app/models/ToDo";
+import { ToDo } from "@/models/ToDo";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
 import React, { useState } from "react";
@@ -12,6 +12,7 @@ import {
   Text,
   TextInput,
   View,
+  Alert
 } from "react-native";
 
 type Props = {
@@ -25,10 +26,25 @@ enum Priority {
 }
 
 const ToDoForm: React.FC<Props> = ({ OnCreate }) => {
-  const { control, handleSubmit } = useForm<ToDo>();
-  const [show, setShow] = useState(false);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ToDo>({
+    defaultValues: {
+      title: "",
+      todo: "",
+      priority: Priority.low,
+      deadline: new Date(),
+      completed: false,
+      userId: 1,
+    },
+  });
+
+  const [pickerMode, setPickerMode] = useState<"date" | "time" | null>(null);
+
   const onSubmit: SubmitHandler<ToDo> = (data) => {
-    console.log(data);
+    console.log("Form Data:", data);
     OnCreate(data);
   };
 
@@ -39,84 +55,100 @@ const ToDoForm: React.FC<Props> = ({ OnCreate }) => {
       <Text style={styles.label}>Title</Text>
       <Controller
         control={control}
-        rules={{
-          required: true,
-        }}
+        rules={{ required: "Назва обов'язкова" }}
+        name="title"
         render={({ field: { onChange, value } }) => (
           <TextInput
-            style={styles.input}
+            style={[styles.input, errors.title && { borderColor: "red" }]}
             placeholder="Enter ToDo title"
             onChangeText={onChange}
             value={value}
           />
         )}
-        name="title"
       />
 
-      <Text style={styles.label}>ToDo</Text>
+      <Text style={styles.label}>Description</Text>
       <Controller
         control={control}
-        rules={{
-          required: true,
-        }}
+        rules={{ required: "Опис обов'язковий" }}
+        name="todo"
         render={({ field: { onChange, value } }) => (
           <TextInput
-            style={styles.input}
+            style={[styles.input, errors.todo && { borderColor: "red" }]}
             placeholder="Enter ToDo description"
             onChangeText={onChange}
             value={value}
           />
         )}
-        name="todo"
       />
 
       <Text style={styles.label}>Priority</Text>
       <Controller
         control={control}
         name="priority"
-        defaultValue={Priority.low}
         render={({ field: { onChange, value } }) => (
-          <View
-            style={{
-              borderBottomWidth: 1,
-              borderColor: "#ccc",
-              marginVertical: 10,
-            }}
-          >
+          <View style={styles.pickerContainer}>
             <Picker
               selectedValue={value}
               onValueChange={(itemValue) => onChange(itemValue)}
             >
-              <Picker.Item label="low" value={Priority.low} />
-              <Picker.Item label="medium" value={Priority.medium} />
-              <Picker.Item label="high" value={Priority.high} />
+              <Picker.Item label="Low" value={Priority.low} />
+              <Picker.Item label="Medium" value={Priority.medium} />
+              <Picker.Item label="High" value={Priority.high} />
             </Picker>
           </View>
         )}
       />
 
-      <Text style={styles.label}>Date</Text>
+      <Text style={styles.label}>Deadline</Text>
       <Controller
         control={control}
-        name="date"
-        defaultValue={new Date()}
+        name="deadline"
         render={({ field: { onChange, value } }) => (
           <View>
-            <Text>Дата виконання: {value.toLocaleDateString()}</Text>
+            <Text style={styles.dateDisplay}>
+              {value instanceof Date
+                ? value.toLocaleString()
+                : "Оберіть дедлайн"}
+            </Text>
 
-            <Pressable style={styles.button} onPress={() => setShow(true)}>
-              <Text style={styles.buttonText}>Обрати дату</Text>
+            <Pressable
+              style={styles.buttonDate}
+              onPress={() => setPickerMode("date")} // Спочатку відкриваємо дату
+            >
+              <Text style={styles.buttonText}>Встановити дату та час</Text>
             </Pressable>
 
-            {(show || Platform.OS === "ios") && (
+            {pickerMode && (
               <DateTimePicker
-                value={value || new Date()}
-                mode="date"
-                display={Platform.OS === "ios" ? "spinner" : "default"}
+                value={value instanceof Date ? value : new Date()}
+                mode={pickerMode} // Використовуємо наш стан ('date' або 'time')
+                is24Hour={true}
+                display="default"
                 onChange={(event, selectedDate) => {
-                  setShow(false);
+                  // Якщо користувач скасував вибір
+                  if (event.type === "dismissed") {
+                    setPickerMode(null);
+                    return;
+                  }
+
                   if (selectedDate) {
+                    // Зберігаємо обрану дату/час
                     onChange(selectedDate);
+
+                    if (Platform.OS === "android") {
+                      if (pickerMode === "date") {
+                        // ПІСЛЯ дати одразу просимо обрати час
+                        // Важливо: ставимо null на мить, щоб скинути нативний діалог
+                        setPickerMode(null);
+                        setTimeout(() => setPickerMode("time"), 100);
+                      } else {
+                        // ПІСЛЯ часу закриваємо все
+                        setPickerMode(null);
+                      }
+                    } else {
+                      setPickerMode(null);
+                    }
                   }
                 }}
               />
@@ -125,44 +157,49 @@ const ToDoForm: React.FC<Props> = ({ OnCreate }) => {
         )}
       />
 
-      <Text style={styles.label}>Completed</Text>
-      <Controller
-        control={control}
-        rules={{
-          required: true,
-        }}
-        render={({ field: { onChange, value } }) => (
-          <Switch
-            onValueChange={onChange}
-            value={value}
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={value ? "#f5dd4b" : "#f4f3f4"}
-          />
-        )}
-        defaultValue={false}
-        name="completed"
-      />
+      <View style={styles.switchRow}>
+        <Text style={styles.label}>Completed</Text>
+        <Controller
+          control={control}
+          name="completed"
+          render={({ field: { onChange, value } }) => (
+            <Switch
+              onValueChange={onChange}
+              value={value}
+              trackColor={{ false: "#767577", true: "#81b0ff" }}
+            />
+          )}
+        />
+      </View>
 
       <Text style={styles.label}>User Id</Text>
       <Controller
         control={control}
-        rules={{
-          required: true,
-        }}
+        rules={{ required: true }}
+        name="userId"
         render={({ field: { onChange, value } }) => (
           <TextInput
             style={styles.input}
-            placeholder="Enter ToDo userId"
-            onChangeText={onChange}
-            value={value?.toString() ?? ""}
+            keyboardType="numeric"
+            placeholder="Enter User ID"
+            onChangeText={(text) => onChange(Number(text))}
+            value={value?.toString()}
           />
         )}
-        name="userId"
       />
 
-      <Pressable style={styles.button} onPress={handleSubmit(onSubmit)}>
+      <Pressable
+        style={[styles.buttonCreate, { marginTop: 30 }]}
+        onPress={handleSubmit(onSubmit)}
+      >
         <Text style={styles.buttonText}>Create ToDo</Text>
       </Pressable>
+
+      {Object.keys(errors).length > 0 && (
+        <Text style={styles.errorText}>
+          Будь ласка, заповніть всі обов'язкові поля
+        </Text>
+      )}
     </ScrollView>
   );
 };
@@ -170,43 +207,49 @@ const ToDoForm: React.FC<Props> = ({ OnCreate }) => {
 export default ToDoForm;
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "#272222",
-    minHeight: 500,
-    height: 600,
-    padding: 20,
-  },
-  heading: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 16,
-  },
-  label: {
-    marginTop: 10,
-    fontWeight: "600",
-  },
+  container: { padding: 20, paddingBottom: 50 },
+  heading: { fontSize: 24, fontWeight: "bold", marginBottom: 20 },
+  label: { fontSize: 16, fontWeight: "600", marginTop: 15 },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
-    padding: 10,
+    padding: 12,
     marginTop: 5,
-  },
-  textArea: {
-    height: 80,
-    textAlignVertical: "top",
-  },
-  button: {
-    backgroundColor: "#007AFF",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 20,
-  },
-  buttonText: {
-    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: "600",
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    marginTop: 5,
+    overflow: "hidden",
+  },
+  dateDisplay: { marginTop: 10, fontSize: 16, color: "#333" },
+  buttonDate: {
+    backgroundColor: "#5856D6",
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 10,
+    alignItems: "center",
+  },
+  buttonCreate: {
+    backgroundColor: "#007AFF",
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  buttonText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
+  switchRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: 15,
+  },
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    marginTop: 10,
+    fontWeight: "bold",
   },
 });

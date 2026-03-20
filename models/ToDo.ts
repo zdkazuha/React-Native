@@ -8,15 +8,9 @@ export type ToDo = {
     readonly id: number;
     title: string;
     todo: string;
-    date: Date;
+    deadline: Date;
     priority: Priority
     completed: boolean;
     userId: number;
+    notificationId: string | null
 }
-
-// export type ToDo = {
-//     readonly id: number;
-//     todo: string;
-//     completed: boolean;
-//     userId: number;
-// }

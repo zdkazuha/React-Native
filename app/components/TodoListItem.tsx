@@ -1,6 +1,6 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Priority, ToDo } from "../models/ToDo";
+import { Priority, ToDo } from "../../models/ToDo";
 
 type ToDoItemProps = {
   toDo: ToDo;
@@ -13,8 +13,8 @@ export default function ToDoListItem({ toDo, onDelete }: ToDoItemProps) {
   const displayTodo = toDo?.todo || "No description provided";
 
   const getSafeDate = () => {
-    if (!toDo?.date) return new Date();
-    const d = new Date(toDo.date);
+    if (!toDo?.deadline) return new Date();
+    const d = new Date(toDo.deadline);
     return isNaN(d.getTime()) ? new Date() : d;
   };
 
@@ -63,7 +63,7 @@ export default function ToDoListItem({ toDo, onDelete }: ToDoItemProps) {
       <View style={styles.footer}>
         <View>
           <Text style={styles.dateText}>
-            📅 {displayDate.toLocaleDateString()}
+            {displayDate.toLocaleString()}
           </Text>
           <Text style={styles.userIdText}>
             User ID: {toDo?.userId || "N/A"}
