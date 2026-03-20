@@ -114,7 +114,7 @@ const ToDoForm: React.FC<Props> = ({ OnCreate }) => {
 
             <Pressable
               style={styles.buttonDate}
-              onPress={() => setPickerMode("date")} // Спочатку відкриваємо дату
+              onPress={() => setPickerMode("date")} 
             >
               <Text style={styles.buttonText}>Встановити дату та час</Text>
             </Pressable>
@@ -122,28 +122,23 @@ const ToDoForm: React.FC<Props> = ({ OnCreate }) => {
             {pickerMode && (
               <DateTimePicker
                 value={value instanceof Date ? value : new Date()}
-                mode={pickerMode} // Використовуємо наш стан ('date' або 'time')
+                mode={pickerMode}
                 is24Hour={true}
                 display="default"
                 onChange={(event, selectedDate) => {
-                  // Якщо користувач скасував вибір
                   if (event.type === "dismissed") {
                     setPickerMode(null);
                     return;
                   }
 
                   if (selectedDate) {
-                    // Зберігаємо обрану дату/час
                     onChange(selectedDate);
 
                     if (Platform.OS === "android") {
                       if (pickerMode === "date") {
-                        // ПІСЛЯ дати одразу просимо обрати час
-                        // Важливо: ставимо null на мить, щоб скинути нативний діалог
                         setPickerMode(null);
                         setTimeout(() => setPickerMode("time"), 100);
                       } else {
-                        // ПІСЛЯ часу закриваємо все
                         setPickerMode(null);
                       }
                     } else {
