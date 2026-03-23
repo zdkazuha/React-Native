@@ -1,7 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
+import { useAppSelector } from "../hooks";
+import { selectCount } from "../slices/mesuSlice";
 
 export default function TabLayout() {
+
+  const count = useAppSelector(selectCount)
+
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: "#007AFF" }}>
       <Tabs.Screen
@@ -9,6 +14,7 @@ export default function TabLayout() {
         options={{
           title: "ToDo List",
           headerShown: false,
+          tabBarBadge: count,
           tabBarIcon: ({ color }) => (
             <Ionicons name="list" size={24} color={color} />
           ),
