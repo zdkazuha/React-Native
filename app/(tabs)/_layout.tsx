@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { useAppSelector } from "../hooks";
+import { useAppSelector } from "../../services/hooks";
 import { selectCount } from "../slices/mesuSlice";
 
 export default function TabLayout() {

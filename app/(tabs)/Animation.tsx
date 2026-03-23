@@ -34,7 +34,7 @@ const Animation = () => {
     backgroundColor: interpolateColor(
       width.value,
       [25, 50, 75, 100],
-      ["green", "blue", "yellow", "red"],
+      ["green", "skyblue", "yellow", "red"],
     ),
   }));
 
