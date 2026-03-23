@@ -46,9 +46,19 @@ export default function TabLayout() {
           title: "Notifications",
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <Ionicons name="add-circle" size={24} color={color} />
+            <Ionicons name="notifications-outline" size={24} color={color} />
           ),
         }}
+      />
+      <Tabs.Screen
+        name="Animation"
+        options={{
+          title: "Animation",
+          tabBarIcon: ({ color }) => (
+          <Ionicons name="color-filter-outline" size={24} color={color} />
+          ),
+
+          }}
       />
     </Tabs>
   );
