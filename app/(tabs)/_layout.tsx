@@ -39,7 +39,7 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="NotificationsPage"
         options={{
           title: "Notifications",
@@ -48,11 +48,12 @@ export default function TabLayout() {
             <Ionicons name="notifications-outline" size={24} color={color} />
           ),
         }}
-      />
+      /> */}
       <Tabs.Screen
         name="Animation"
         options={{
           title: "Animation",
+          headerShown: false,
           tabBarIcon: ({ color }) => (
             <Ionicons name="color-filter-outline" size={24} color={color} />
           ),
@@ -62,8 +63,19 @@ export default function TabLayout() {
         name="Cards"
         options={{
           title: "Cards",
+          headerShown: false,
           tabBarIcon: ({ color }) => (
-            <Ionicons name="color-filter-outline" size={24} color={color} />
+            <Ionicons name="caret-forward-circle-outline" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="db"
+        options={{
+          title: "db",
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="analytics-outline" size={24} color={color} />
           ),
         }}
       />
