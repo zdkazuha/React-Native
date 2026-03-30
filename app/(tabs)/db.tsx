@@ -7,7 +7,7 @@ import { MiniToDo } from "../../models/MiniToDo";
 import { getItems, deleteItem } from "../../services/db";
 import ToDoListItem from "../components/ToDoListItem"; 
 
-export default function MiniToDoListScreen() {
+export default function Db() {
   const db = useSQLiteContext(); 
   const [toDos, setToDos] = useState<MiniToDo[]>([]);
   const [isLoading, setIsLoading] = useState(true);

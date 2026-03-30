@@ -70,9 +70,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="db"
+        name="Db"
         options={{
-          title: "db",
+          title: "Db",
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <Ionicons name="analytics-outline" size={24} color={color} />
