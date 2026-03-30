@@ -4,8 +4,7 @@ import { useAppSelector } from "../../services/hooks";
 import { selectCount } from "../slices/mesuSlice";
 
 export default function TabLayout() {
-
-  const count = useAppSelector(selectCount)
+  const count = useAppSelector(selectCount);
 
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: "#007AFF" }}>
@@ -55,10 +54,18 @@ export default function TabLayout() {
         options={{
           title: "Animation",
           tabBarIcon: ({ color }) => (
-          <Ionicons name="color-filter-outline" size={24} color={color} />
+            <Ionicons name="color-filter-outline" size={24} color={color} />
           ),
-
-          }}
+        }}
+      />
+      <Tabs.Screen
+        name="Cards"
+        options={{
+          title: "Cards",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="color-filter-outline" size={24} color={color} />
+          ),
+        }}
       />
     </Tabs>
   );
