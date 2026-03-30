@@ -21,6 +21,8 @@
     "@react-navigation/native": "^7.0.0",
     "@react-navigation/native-stack": "^7.0.0",
     "@reduxjs/toolkit": "^2.11.2",
+    "@types/jest": "^30.0.0",
+    "drizzle-orm": "^0.45.2",
     "expo": "~52.0.0",
     "expo-constants": "~17.0.3",
     "expo-font": "~13.0.0",
@@ -35,6 +37,8 @@
     "expo-symbols": "~0.2.0",
     "expo-system-ui": "~4.0.0",
     "expo-web-browser": "~14.0.0",
+    "jest": "~29.7.0",
+    "jest-expo": "~52.0.6",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-hook-form": "^7.54.2",
@@ -49,7 +53,9 @@
   },
   "devDependencies": {
     "@types/react": "~18.3.12",
+    "babel-plugin-inline-import": "^3.0.0",
     "babel-plugin-react-compiler": "^19.0.0-beta-ebf51a3-20250411",
+    "drizzle-kit": "^0.31.10",
     "eslint": "^8.57.0",
     "eslint-config-expo": "~8.0.1",
     "typescript": "~5.3.3"

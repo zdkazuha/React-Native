@@ -33,7 +33,7 @@ export async function migrateDbIfNeeded(db: SQLiteDatabase) {
   await db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION}`);
 }
 
-export async function addItem(title: string, todo: string): Promise<MiniToDo> {
+export async function addToDo(title: string, todo: string): Promise<MiniToDo> {
   const result = await db.runAsync(
     `INSERT INTO todos (title, todo) VALUES (?, ?);`, 
     [title, todo]
@@ -46,17 +46,17 @@ export async function addItem(title: string, todo: string): Promise<MiniToDo> {
   } as MiniToDo;
 }
 
-export async function deleteItem(id: number) {
+export async function deleteToDo(id: number) {
   await db.runAsync(`DELETE FROM todos WHERE id = ?;`, [id]);
 }
 
-export async function updateItem(item: MiniToDo) {
+export async function updateToDo(item: MiniToDo) {
   await db.runAsync(
     `UPDATE todos SET title = ?, todo = ? WHERE id = ?;`, 
     [item.title, item.todo, item.id]
   );
 }
 
-export async function getItems() {
+export async function getToDos() {
   return await db.getAllAsync<MiniToDo>("SELECT * FROM todos;");
 }

@@ -65,7 +65,11 @@ export default function TabLayout() {
           title: "Cards",
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <Ionicons name="caret-forward-circle-outline" size={24} color={color} />
+            <Ionicons
+              name="caret-forward-circle-outline"
+              size={24}
+              color={color}
+            />
           ),
         }}
       />
@@ -73,6 +77,16 @@ export default function TabLayout() {
         name="Db"
         options={{
           title: "Db",
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="analytics-outline" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="Db_orm"
+        options={{
+          title: "Db_orm",
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <Ionicons name="analytics-outline" size={24} color={color} />
